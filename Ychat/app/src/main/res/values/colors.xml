@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="login_btn_on">#6495ED</color>
+    <color name="login_btn_down">#FFFAFA</color>
+    <color name="chat_username">#FFFAFA</color>
+    <color name="login_text">#FF0000FF</color>
+    <color name="text_on">#00EE00</color>
+    <color name="text_off">#0000FF</color>
 </resources>

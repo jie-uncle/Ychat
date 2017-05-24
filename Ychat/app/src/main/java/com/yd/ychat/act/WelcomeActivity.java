@@ -6,12 +6,13 @@ import android.os.Message;
 import android.os.PersistableBundle;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.hyphenate.chat.EMClient;
 import com.yd.ychat.R;
 
 /**
- * Created by 荀高杰 on 2017/4/21.
+ * 启动页
  */
 
 public class WelcomeActivity extends BaseActivity {
@@ -19,25 +20,37 @@ public class WelcomeActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(EMClient.getInstance().isLoggedInBefore()){
-                intent2main();
-            }else{
-                intent2login();
-            }
+            intent2next();
         }
     };
+
+
+    /**
+     *跳转下个界面
+     */
+    private void intent2next() {
+        //判断之前是否登录过
+        if(EMClient.getInstance().isLoggedInBefore()){
+            intent2main();
+        }else{
+            intent2login();
+        }
+        WelcomeActivity.this.finish();
+    }
+
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome);
         handler.sendEmptyMessageDelayed(0,3000);
         findViewById(R.id.ll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handler.removeMessages(0);
-                handler.sendEmptyMessage(1);
+                intent2next();
             }
         });
+
     }
 }

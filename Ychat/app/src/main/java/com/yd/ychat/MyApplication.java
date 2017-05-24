@@ -9,6 +9,7 @@ import com.hyphenate.chat.EMOptions;
 
 /**
  * Created by 荀高杰 on 2017/4/21.
+ * 生命周期与程序一制
  */
 
 public class MyApplication extends Application {

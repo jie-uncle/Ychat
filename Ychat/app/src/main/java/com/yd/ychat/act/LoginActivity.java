@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,27 +20,35 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 import com.yd.ychat.R;
+import com.yd.ychat.utils.SPutil;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -63,18 +72,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private LinearLayout layoutview;
+    private boolean progressbar_state=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        initview();
+
+    }
+
+    private void initview() {
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
+        //监听软键盘的回车键
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
+            @Override                                          //id :imeactionid
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     attemptLogin();
@@ -84,16 +101,47 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+
+                    attemptLogin();
+
+
             }
         });
+        CheckBox login_checkbox= (CheckBox) findViewById(R.id.login_checkbox);
+        login_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    mEmailSignInButton.setEnabled(true);
+                }else{
+                    mEmailSignInButton.setEnabled(false);
+
+                }
+            }
+        });
+        TextView login_register= (TextView) findViewById(R.id.login_register);
+        login_register .setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    intent2register();
+
+            }
+        });
+        TextView login_forget= (TextView) findViewById(R.id.login_forget);
+        TextView login_service_clause= (TextView) findViewById(R.id.login_service_clause);
+        settextcolor(login_forget);
+        settextcolor(login_service_clause);
+        settextcolor(login_register);
 
         mLoginFormView = findViewById(R.id.login_form);
+        layoutview= (LinearLayout) findViewById(R.id.login_ll);
         mProgressView = findViewById(R.id.login_progress);
+        mEmailView.setText(SPutil.getloginsuer(this));
     }
 
     private void populateAutoComplete() {
@@ -160,7 +208,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         boolean cancel = false;
         View focusView = null;
-
+        if(TextUtils.isEmpty(password)){
+            mPasswordView.setError("密码不能为空");
+            focusView = mPasswordView;
+            cancel = true;
+        }
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
@@ -174,7 +226,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+            mEmailView.setError(getString(R.string.error_invalid_user));
             focusView = mEmailView;
             cancel = true;
         }
@@ -182,24 +234,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+            //请求一个焦点
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            login_in(email, password);
         }
     }
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.length()>=2;
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     /**
@@ -210,9 +262,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
+        progressbar_state=show;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
+            layoutview.setVisibility(show ? View.GONE : View.VISIBLE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             mLoginFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
@@ -292,6 +346,51 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
+    public void login_in(final String userName, String password){
+        EMClient.getInstance().login(userName,password,new EMCallBack() {//回调
+
+            @Override
+            public void onSuccess() {
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+                SPutil.setloginsuer(LoginActivity.this,userName);
+                    intent2main();
+                    finish();
+                Log.d("main", "登录聊天服务器成功！");
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+            }
+
+            @Override
+            public void onError(int code, final String message) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        Snackbar.make(mEmailView,message,Snackbar.LENGTH_SHORT);
+                        showToast(message);
+                        mPasswordView.requestFocus();
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    }
+                });
+
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(progressbar_state==true){
+            showProgress(false);
+        }else{
+            super.onBackPressed();
+        }
+
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -347,6 +446,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+    public void settextcolor(final TextView tv){
+        tv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+
+                        tv.setTextColor(Color.WHITE);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        tv.setTextColor(Color.BLUE);
+                        if(tv.getId()==R.id.login_register){
+
+                                intent2register();
+
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+                        break;
+
+                }
+
+
+                return true;
+            }
+        });
     }
 }
 
