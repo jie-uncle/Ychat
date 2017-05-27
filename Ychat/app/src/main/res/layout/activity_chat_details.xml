@@ -18,6 +18,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_marginTop="2dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:layout_width="match_parent"
@@ -34,11 +35,13 @@
                 android:paddingBottom="6dp"
                 android:layout_height="wrap_content" />
             <Button
+                android:background="@drawable/chat_msg_send"
                 android:id="@+id/chat_msg_send"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1.5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_width="50dp"
+                android:layout_height="35dp"
                 android:text="发送"
                 />
         </LinearLayout>
@@ -77,7 +80,6 @@
                 android:src="@drawable/jia"/>
         </LinearLayout>
         <FrameLayout
-
             android:id="@+id/chat_bobottom_flay"
 
             android:layout_width="match_parent"

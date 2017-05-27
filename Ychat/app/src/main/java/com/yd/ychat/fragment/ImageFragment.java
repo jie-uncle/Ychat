@@ -17,6 +17,7 @@ import android.widget.Button;
 import com.yd.ychat.R;
 import com.yd.ychat.act.ChatActivity;
 import com.yd.ychat.adapter.ImageRecycleAdapter;
+import com.yd.ychat.port.Message_imagelist;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,28 +52,60 @@ public class ImageFragment extends BaseFragment implements View.OnClickListener 
     private void initview(View view) {
         message_fragment_image_recycleview = (RecyclerView) view.findViewById(R.id.message_fragment_image_recycleview);
         image_send= (Button) view.findViewById(R.id.image_send);
+        image_send.setEnabled(false);
         image_send.setOnClickListener(this);
+//        获取手机图片的集合
         getimagepathlist();
          adapter=new ImageRecycleAdapter(list,getContext());
         LinearLayoutManager llm=new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.HORIZONTAL);
         message_fragment_image_recycleview.setLayoutManager(llm);
         message_fragment_image_recycleview.setAdapter(adapter);
+        adapter.setClick(new Message_imagelist() {
+            @Override
+            public void size_ok() {
+                image_send.setEnabled(true);
+            }
+
+            @Override
+            public void size_no() {
+                image_send.setEnabled(false);
+            }
+        });
 
     }
 
     private void getimagepathlist() {
+//        清楚图片数据源
         list.clear();
-        Cursor cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+//        查询图片数据
+        Cursor cursor = getActivity().getContentResolver().query(
+//                要查询的URI
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                想要查询的字段
+                null,
+//                查询条件
+                null,
+//                查询条件的值
+                null,
+//                排序
+                null);
         if(cursor!=null){
+//            遍历得到的游标
             while (cursor.moveToNext()){
+//                获取当前游标中 图片路径 字段的值
                 String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+//                获取 宽 高 的值
                 int Width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
+
                 int Height = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT))   ;
 
+
                 Log.e("height",Height+"");
+//                添加到集合中
                 list.add(path);
             }
+//            关闭游标
             cursor.close();
         }
 
@@ -81,16 +114,17 @@ public class ImageFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         ChatActivity chatActivity = (ChatActivity) getActivity();
+//        得到选择的图片集合
         Set<String> paths = adapter.getpaths();
+//        用迭代器遍历
         Iterator<String> iterator = paths.iterator();
+
         while (iterator.hasNext()){
+//            创建图片消息（里面会调用发送消息）
             chatActivity.creatImagemsg(iterator.next());
         }
+        adapter.refresh();
+        paths.clear();
     }
-    private  void tupainchali(){
-        WindowManager w= (WindowManager) getActivity().getSystemService(WINDOW_SERVICE);
-        int height = w.getDefaultDisplay().getHeight();
 
-        Log.e("Heig",height+"");
-    }
 }

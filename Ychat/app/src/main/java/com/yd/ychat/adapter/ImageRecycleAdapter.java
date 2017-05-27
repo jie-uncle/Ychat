@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.yd.ychat.R;
+import com.yd.ychat.port.Message_imagelist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +27,21 @@ public class ImageRecycleAdapter extends RecyclerView.Adapter<ImageRecycleAdapte
     private List<String> list;
     private Context context;
     private Set<String> paths=new HashSet<>();
-
+    private Message_imagelist click;
     private boolean[] checked;
+
+    public void setClick(Message_imagelist click) {
+        this.click = click;
+    }
+
+
+    public void refresh(){
+        for (int i=0;i<checked.length;i++) {
+           checked[i]=false;
+        }
+
+        notifyDataSetChanged();
+    }
 
     public ImageRecycleAdapter(List<String> list, Context context) {
         this.list = list;
@@ -59,6 +73,14 @@ public class ImageRecycleAdapter extends RecyclerView.Adapter<ImageRecycleAdapte
 
                     paths.remove(list.get(position));
                 }
+                if(click!=null){
+                    if(paths.size()>0){
+                        click.size_ok();
+                    }else{
+                        click.size_no();
+                    }
+                }
+
             }
         });
     }

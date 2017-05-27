@@ -2,6 +2,7 @@ package com.yd.ychat.act;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -34,6 +35,7 @@ import com.yd.ychat.R;
 import com.yd.ychat.adapter.ChatRecyclerAdapter;
 import com.yd.ychat.array.CaogaoMap;
 import com.yd.ychat.fragment.ImageFragment;
+import com.yd.ychat.fragment.faceFragment;
 import com.yd.ychat.manager.MessageManager;
 import com.yd.ychat.utils.SPutil;
 
@@ -42,8 +44,11 @@ import java.util.Map;
 
 import static com.yd.ychat.R.id.action_bar;
 import static com.yd.ychat.R.id.chat_bobottom_flay;
+import static com.yd.ychat.R.id.chat_message_image_lay;
+import static com.yd.ychat.R.id.message_fragment_face_recyclerview;
 
 public class ChatActivity extends BaseActivity implements View.OnClickListener, EMMessageListener {
+    public static final int FRAGMENT_CLOSE = 0;
     private  boolean flay=false;
     private View chat_bobottom_flay;
     private ImageView chat_iv_yuyin;
@@ -60,6 +65,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private Map<String,String> map;
     private EMConversation conversation;
     private ImageFragment imagefragment;
+    private faceFragment  faceFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,15 +139,29 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         chat_recyclerview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                float startY = 0;
                 switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        HideKey();
+                        if(imagefragment.isVisible()){
+                            bottom_fly_open_or_close(FRAGMENT_CLOSE);
+                        }
+
+
+
+
+
+                       break;
+
                 }
-                return true;
+                return false;
             }
         });
 
         imagefragment=new ImageFragment();
+        faceFragment=new faceFragment();
+
         //初始化map
         map=CaogaoMap.getInstance();
         //设置监听（还未实现）
@@ -157,9 +177,9 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         chat_Swipereshlay.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                messages= conversation.loadMoreMsgFromDB(messages.get(0).getMsgId(),10);
-//                messages=conversation.getAllMessages();
-//                adapter.notifyDataSetChanged();
+                messages= conversation.loadMoreMsgFromDB(messages.get(0).getMsgId(),10);
+                messages=conversation.getAllMessages();
+                adapter.notifyDataSetChanged();
                 chat_Swipereshlay.setRefreshing(false);
 
 
@@ -196,6 +216,16 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         });
+        chat_edit_msg_content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(hasFocus){
+                    chat_bobottom_flay.setFocusable(true);
+                    HideKey();
+                }
+            }
+        });
 
     }
 
@@ -219,13 +249,15 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
                 break;
             case R.id.chat_edit_msg_content:
-                chat_recyclerview.scrollToPosition(messages.size()-1);
+                bottom_fly_open_or_close(FRAGMENT_CLOSE);
                 break;
             case R.id.chat_iv_biaoqing:
+                bottom_fly_open_or_close(R.id.chat_iv_biaoqing);
+
                 HideKey();
                 break;
             case R.id.chat_iv_tupian:
-                bottom_fly_open_or_close();
+                bottom_fly_open_or_close(R.id.chat_iv_tupian);
                 HideKey();
 
                 break;
@@ -245,24 +277,83 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         inputMethodManager.hideSoftInputFromWindow(chat_edit_msg_content.getWindowToken(),0);
     }
 
-    private void bottom_fly_open_or_close() {
-        FragmentManager fm = getSupportFragmentManager();
-        if(imagefragment.isAdded()){
-            chat_bobottom_flay.setVisibility(View.GONE);
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.remove(imagefragment);
-            flay=false;
-            ft.commit();
-            fm.popBackStack();
-        }else{
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.add(R.id.chat_bobottom_flay,imagefragment);
-            ft.addToBackStack(null);
-            flay=true;
-            chat_bobottom_flay.setVisibility(View.VISIBLE);
-            ft.commit();
+    private void bottom_fly_open_or_close(int res) {
+        FragmentTransaction ft_image = null;
+        FragmentTransaction ft_face = null;
 
+        if(res==R.id.chat_iv_tupian){
+            FragmentManager fm = getSupportFragmentManager();
+            if(imagefragment.isVisible()){
+                closeFragment(fm,imagefragment);
+            }else{
+                if(faceFragment.isVisible()){
+                    replaceFragment(ft_face,fm,faceFragment,imagefragment);
+                }else{
+                    addFragment(fm,imagefragment);
+                }
+            }
+        }else if(res==R.id.chat_iv_biaoqing){
+            FragmentManager fm = getSupportFragmentManager();
+            if(faceFragment.isVisible()){
+                closeFragment(fm,faceFragment);
+            }else{
+                if(imagefragment.isVisible()){
+                    replaceFragment(ft_image, fm,imagefragment,faceFragment);
+                }else{
+                    addFragment(fm,faceFragment);
+                }
+            }
+
+        }else if(res==FRAGMENT_CLOSE){
+            FragmentManager fm = getSupportFragmentManager();
+
+            if(imagefragment.isAdded()){
+                closeFragment(fm,imagefragment);
+            }
+            if(faceFragment.isAdded()){
+                closeFragment(fm,faceFragment);
+            }
         }
+
+
+    }
+
+    private void addFragment(FragmentManager fm,Fragment addfragment) {
+        FragmentTransaction ft_face;
+        ft_face = fm.beginTransaction();
+        ft_face.add(R.id.chat_bobottom_flay,addfragment);
+        ft_face.addToBackStack(null);
+        ft_face.commit();
+    }
+
+    /**
+     *
+     * @param ft_image 就是加载 removeFragment 的FragmentTransaction
+     * @param fm        fragment的管理器
+     * @param removeFragment  要移除的fragment
+     * @param addFranment       要显示的fragment
+     */
+    private void replaceFragment(FragmentTransaction ft_image, FragmentManager fm,Fragment removeFragment,Fragment addFranment) {
+        fm.popBackStack();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        if(ft_image!=null){
+            ft_image.remove(removeFragment);
+        }
+        fragmentTransaction.add(R.id.chat_bobottom_flay,addFranment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    /**
+     *
+     * @param fm
+     * @param fragment 要关闭的fragment
+     */
+    private void closeFragment(FragmentManager fm, Fragment fragment) {
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.commit();
+        fm.popBackStack();
     }
 
     @Override
