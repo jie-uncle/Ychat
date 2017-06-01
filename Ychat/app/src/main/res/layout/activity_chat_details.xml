@@ -79,9 +79,14 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/jia"/>
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#f0f2f8"/>
         <FrameLayout
-            android:id="@+id/chat_bobottom_flay"
 
+            android:background="#ffffff"
+            android:id="@+id/chat_bobottom_flay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -102,4 +107,4 @@
 
 
 
-</RelativeLayout>
+ </RelativeLayout>

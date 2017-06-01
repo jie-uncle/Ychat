@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="280dp"
+   >
+    <TextView
+        android:id="@+id/message_fragment_yuyin_tv"
+        android:layout_marginTop="25dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="按住说话"
+        android:textSize="20dp"/>
+<RelativeLayout
+    android:id="@+id/message_fragment_yuyin_iv_lay"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true">
+
+    <ImageView
+        android:id="@+id/message_fragment_yuyin_iv_on"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/yuyin_on"
+        />
+    <ImageView
+        android:id="@+id/message_fragment_yuyin_iv_down"
+        android:visibility="gone"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/yuyin_down"
+        />
+</RelativeLayout>
+
+
+
+
+</RelativeLayout>

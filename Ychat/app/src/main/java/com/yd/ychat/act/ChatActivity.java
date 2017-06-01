@@ -35,6 +35,7 @@ import com.yd.ychat.R;
 import com.yd.ychat.adapter.ChatRecyclerAdapter;
 import com.yd.ychat.array.CaogaoMap;
 import com.yd.ychat.fragment.ImageFragment;
+import com.yd.ychat.fragment.YuyinFragmrnt;
 import com.yd.ychat.fragment.faceFragment;
 import com.yd.ychat.manager.MessageManager;
 import com.yd.ychat.utils.SPutil;
@@ -66,6 +67,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private EMConversation conversation;
     private ImageFragment imagefragment;
     private faceFragment  faceFragment;
+    private YuyinFragmrnt yuyinFragmrnt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +163,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
         imagefragment=new ImageFragment();
         faceFragment=new faceFragment();
+         yuyinFragmrnt = new YuyinFragmrnt();
 
         //初始化map
         map=CaogaoMap.getInstance();
@@ -262,6 +265,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
                 break;
             case R.id.chat_iv_yuyin:
+                bottom_fly_open_or_close(R.id.chat_iv_yuyin);
                 HideKey();
                 break;
             case R.id.chat_iv_genduo:
@@ -280,6 +284,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private void bottom_fly_open_or_close(int res) {
         FragmentTransaction ft_image = null;
         FragmentTransaction ft_face = null;
+        FragmentTransaction ft_yuyin = null;
+
 
         if(res==R.id.chat_iv_tupian){
             FragmentManager fm = getSupportFragmentManager();
@@ -288,6 +294,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             }else{
                 if(faceFragment.isVisible()){
                     replaceFragment(ft_face,fm,faceFragment,imagefragment);
+                }else if(yuyinFragmrnt.isVisible()){
+                    replaceFragment(ft_yuyin,fm,yuyinFragmrnt,imagefragment);
                 }else{
                     addFragment(fm,imagefragment);
                 }
@@ -299,10 +307,29 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             }else{
                 if(imagefragment.isVisible()){
                     replaceFragment(ft_image, fm,imagefragment,faceFragment);
+                }else if(yuyinFragmrnt.isVisible()){
+                    replaceFragment(ft_yuyin,fm,yuyinFragmrnt,faceFragment);
                 }else{
                     addFragment(fm,faceFragment);
                 }
             }
+
+        }else if(res==R.id.chat_iv_yuyin){
+            FragmentManager fm = getSupportFragmentManager();
+            if(yuyinFragmrnt.isVisible()){
+                closeFragment(fm,yuyinFragmrnt);
+            }else{
+                if(imagefragment.isVisible()){
+                    replaceFragment(ft_image, fm,imagefragment,yuyinFragmrnt);
+                }else if(faceFragment.isVisible()){
+                    replaceFragment(ft_yuyin,fm,faceFragment,yuyinFragmrnt);
+                }else{
+                    addFragment(fm,yuyinFragmrnt);
+                }
+            }
+
+
+
 
         }else if(res==FRAGMENT_CLOSE){
             FragmentManager fm = getSupportFragmentManager();
@@ -312,6 +339,9 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             }
             if(faceFragment.isAdded()){
                 closeFragment(fm,faceFragment);
+            }
+            if(yuyinFragmrnt.isAdded()){
+                closeFragment(fm,yuyinFragmrnt);
             }
         }
 
@@ -433,6 +463,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     public void creatImagemsg(String path){
         EMMessage imageSendMessage = EMMessage.createImageSendMessage(path, false, name);
         sendmsg(imageSendMessage);
+    }
+
+    public void creatYuyin(String path,int time){
+        EMMessage voiceSendMessage = EMMessage.createVoiceSendMessage(path, time, name);
+        sendmsg(voiceSendMessage);
     }
 
     public void sendmsg(EMMessage msg){

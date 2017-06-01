@@ -16,6 +16,7 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.yd.ychat.R;
 import com.yd.ychat.houdler.Imageviewhoudler;
 import com.yd.ychat.houdler.TxtViewhoudler;
+import com.yd.ychat.houdler.Voicehoudler;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter {
     public static final int TXT = 0;
     public static final int IMAGE = 1;
     public static final int VIDEO = 2;
+    public static final int VOICE = 3;
+
     private List<EMMessage> messages;
     private String name;
     private Context context;
@@ -51,6 +54,8 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter {
                 return new Imageviewhoudler(LayoutInflater.from(context).inflate(R.layout.item_chat_massage_image, parent, false));
             case VIDEO:
 
+            case VOICE:
+                return new Voicehoudler(LayoutInflater.from(context).inflate(R.layout.item_chat_message_yuyin,parent,false));
         }
 
         return null;
@@ -67,6 +72,8 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter {
                 return this.IMAGE;
             case VIDEO:
                 return this.VIDEO;
+            case VOICE:
+                return this.VOICE;
         }
         return -1;
     }
@@ -81,6 +88,8 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter {
            ((TxtViewhoudler)holder).setview(emMessage);
        }else if(holder instanceof Imageviewhoudler){
            ((Imageviewhoudler)holder).setview(context,emMessage);
+       }else if(holder instanceof Voicehoudler){
+           ((Voicehoudler)holder).setview(emMessage);
        }
 
     }

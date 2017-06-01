@@ -115,6 +115,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             case VIDEO:
                 holder.item_chat_news.setText("[视频]");
                 break;
+            case VOICE:
+                holder.item_chat_news.setText("[语音]");
+                break;
         }
 
         if(TextUtils.isEmpty(map.get(userName))){
