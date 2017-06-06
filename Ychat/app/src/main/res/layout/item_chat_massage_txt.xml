@@ -1,63 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-<LinearLayout
-
-    android:id="@+id/chat_message_txt_lay"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/item_chat_tv_left_lay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp">
-        <ImageView
-            android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon"/>
-        <TextView
-
-            android:padding="5dp"
-            android:background="@drawable/chat_details"
-            android:maxWidth="240dp"
-            android:lineSpacingMultiplier="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:id="@+id/item_chat_msg_tv_left"
-            android:layout_gravity="center"
-            android:text="sfasfaf"
-            />
-    </LinearLayout>
+    android:layout_marginBottom="5dp"
+    android:id="@+id/item_chat_message_txt_lay"
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/item_chat_tv_right_lay"
+
+        android:id="@+id/chat_message_txt_lay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:gravity="right">
-        <TextView
+        android:orientation="vertical">
 
-            android:padding="5dp"
-            android:background="@drawable/chat_details"
-            android:textSize="18sp"
+        <LinearLayout
+            android:id="@+id/item_chat_tv_left_lay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/item_chat_msg_tv_right"
-            android:maxWidth="240dp"
-            android:text="按时发啥手机费萨比爱神的箭发哈设计费撒即可飞洒讲课费刷卡反射圣诞节阿卡放松放松啥快捷方式卡萨积分撒不开飞机啊飒飒"
-            />
-        <ImageView
-            android:layout_gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal"
+            android:visibility="visible" >
+
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/chatfrom_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@mipmap/icon" />
+
+            <TextView
+                android:padding="8dp"
+                android:id="@+id/item_chat_msg_tv_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/chat_details"
+                android:gravity="center_vertical"
+                android:textColor="@color/gray"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/item_chat_tv_right_lay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon"/>
+            android:layout_alignParentRight="true"
+             >
+
+            <ImageView
+                android:id="@+id/chatto_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/icon" />
+
+            <TextView
+                android:padding="8dp"
+                android:text="sadaasfasfasf"
+                android:id="@+id/item_chat_msg_tv_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/chatto_icon"
+                android:background="@drawable/chat_details"
+                android:gravity="center_vertical"
+                android:textColor="@color/gray"
+                android:textSize="20sp" />
+        </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
 
 
 </RelativeLayout>

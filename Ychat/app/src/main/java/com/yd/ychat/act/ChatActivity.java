@@ -57,7 +57,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
     private ImageView chat_iv_biaoqing;
     private ImageView chat_iv_genduo;
-    private EditText chat_edit_msg_content;
+    public EditText chat_edit_msg_content;
     private Button chat_msg_send;
     private String name;
     private RecyclerView chat_recyclerview;

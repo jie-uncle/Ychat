@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.yd.ychat.R;
+import com.yd.ychat.been.Facebeen;
 import com.yd.ychat.port.Face_itemclick;
 
 import java.util.List;
@@ -18,14 +19,14 @@ import java.util.List;
 
 public class FaceRecycleAdapter extends RecyclerView.Adapter<FaceRecycleAdapter.MyViewholder>{
     private Context context;
-    private List<Integer> list;
+    private List<Facebeen> list;
     private Face_itemclick click;
 
     public void setClick(Face_itemclick click) {
         this.click = click;
     }
 
-    public FaceRecycleAdapter(Context context, List<Integer> list) {
+    public FaceRecycleAdapter(Context context, List<Facebeen> list) {
         this.context = context;
         this.list = list;
     }
@@ -44,7 +45,7 @@ public class FaceRecycleAdapter extends RecyclerView.Adapter<FaceRecycleAdapter.
     }
     @Override
     public void onBindViewHolder(MyViewholder holder, final int position) {
-            holder.item_message_fragment_face_iv.setImageResource(list.get(position));
+            holder.item_message_fragment_face_iv.setImageResource(list.get(position).getRes());
         holder.item_message_fragment_face_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

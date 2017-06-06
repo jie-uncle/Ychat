@@ -34,6 +34,7 @@ public class YuyinFragmrnt extends BaseFragment {
     private Timer timer;
     private TimerTask timerTask;
     private MediaRecorder mr = null;
+    String path = null;
     Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -57,43 +58,47 @@ public class YuyinFragmrnt extends BaseFragment {
         message_fragment_yuyin_iv_lay.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                String path = null;
+
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         path=Environment.getExternalStorageDirectory()+"/"+System.currentTimeMillis()+".amr";
                         message_fragment_yuyin_iv_on.setVisibility(View.GONE);
                         message_fragment_yuyin_iv_down.setVisibility(View.VISIBLE);
-//                        if(mr==null){
-//                            mr=new MediaRecorder();
-//                        }else{
-//                            mr.release();
-//                         }
-//                        ready_record(path);
-//                        mr.start();
+                        if(mr==null){
+                            mr=new MediaRecorder();
+                        }else{
+                            mr.release();
+                         }
+                        ready_record(path);
+                        mr.start();
                         settime();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP:
-//                        if (mr != null) {
-//                            mr.stop();
-//                            mr.release();
+                        if (mr != null) {
+                            mr.stop();
+                            mr.release();
 //                            mr.reset();
-//
-//                            mr=null;
+
+                            mr=null;
                             timer.cancel();
                             timerTask.cancel();
                             timer=null;
                             timerTask=null;
-//                        }
+                        }
                         message_fragment_yuyin_iv_on.setVisibility(View.VISIBLE);
                         message_fragment_yuyin_iv_down.setVisibility(View.GONE);
                         if(time<=1){
-                            Toast.makeText(getContext(),"录音时间太短",Toast.LENGTH_SHORT);
+                            Toast.makeText(getContext(),"录音时间太短",Toast.LENGTH_SHORT).show();
+                        }else{
+                            if (path !=null){
+                                chatActivity.creatYuyin(path,time);
+                            }
                         }
-//                        chatActivity.creatYuyin(path,time);
                         message_fragment_yuyin_tv.setText("按住说话");
+                        path = "";
                         break;
                 }
                 return true;
@@ -110,13 +115,13 @@ public class YuyinFragmrnt extends BaseFragment {
     }
 
     private void ready_record(String path) {
-        try {
+
          mr = new MediaRecorder();
         mr.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mr.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        mr.setOutputFile(path);
-        mr.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
+        mr.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mr.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mr.setOutputFile(path);
+        try {
             mr.prepare();
         } catch (IllegalStateException e) {
 

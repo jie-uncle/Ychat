@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:id="@+id/item_chat_message_yuyin_lay"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/item_chat_msg_yuyin_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         >
@@ -13,16 +16,16 @@
         android:layout_gravity="center_vertical"
         android:src="@mipmap/icon" />
    <LinearLayout
-       android:padding="4dp"
+       android:padding="1dp"
        android:background="@drawable/message_yuyin_style"
 
-       android:id="@+id/item_chat_msg_yuyin_left"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:orientation="horizontal">
        <ImageView
+           android:layout_gravity="center_vertical"
            android:layout_width="40dp"
-           android:layout_height="40dp"
+           android:layout_height="30dp"
            android:src="@drawable/yuyin_left"/>
         <TextView
             android:id="@+id/item_chat_msg_yuyin_left_time"
@@ -30,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="6"
-            android:textSize="28sp"
+            android:textSize="20sp"
             android:layout_gravity="center_vertical"
             />
        <TextView
@@ -45,23 +48,16 @@
 </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/item_chat_msg_yuyin_right"
         android:layout_gravity="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
-
-
         <LinearLayout
-            android:id="@+id/item_chat_msg_yuyin_right"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:background="@drawable/message_yuyin_style"
             android:orientation="horizontal"
-            android:padding="4dp">
-
-
-
+            android:padding="1dp">
             <TextView
                 android:id="@+id/item_chat_msg_yuyin_right_time"
                 android:layout_width="wrap_content"
@@ -69,7 +65,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="28dp"
                 android:text="6"
-                android:textSize="28sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,8 +75,9 @@
                 android:text="''"
                 android:textSize="28sp" />
             <ImageView
+                android:layout_gravity="center_vertical"
                 android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_height="30dp"
                 android:src="@drawable/yuyin_right" />
         </LinearLayout>
         <ImageView

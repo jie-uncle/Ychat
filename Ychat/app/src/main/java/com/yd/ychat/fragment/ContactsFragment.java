@@ -30,12 +30,20 @@ public class ContactsFragment extends BaseFragment{
 
         super.onViewCreated(view, savedInstanceState);
 
-        try {
-            List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
-            Log.e("haha",usernames.toString());
 
-        } catch (HyphenateException e) {
-            e.printStackTrace();
-        }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                    } catch (HyphenateException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+
+
     }
 }

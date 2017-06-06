@@ -9,4 +9,5 @@
     <color name="login_text">#FF0000FF</color>
     <color name="text_on">#00EE00</color>
     <color name="text_off">#0000FF</color>
+    <color name="gray">#737373</color>
 </resources>
