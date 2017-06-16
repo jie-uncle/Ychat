@@ -54,14 +54,9 @@ public class faceFragment extends BaseFragment {
             public void OnitemClicklistener(int index) {
 
                 SpannableString spannableString = new SpannableString(facebeens.get(index).getName());
-
-
-
                 Drawable d = getResources().getDrawable(facebeens.get(index).getRes());
                 d.setBounds(0, 0, d.getIntrinsicWidth()/2,  d.getIntrinsicHeight()/2);
-                //用这个drawable对象代替字符串easy
                 ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
-                //包括0但是不包括"easy".length()即：4。[0,4)。值得注意的是当我们复制这个图片的时候，实际是复制了"easy"这个字符串。
                 spannableString.setSpan(span,0 , facebeens.get(index).getName().length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                 ((ChatActivity)getActivity()).chat_edit_msg_content.append(spannableString);
 

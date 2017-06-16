@@ -3,6 +3,7 @@ package com.yd.ychat.adapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,10 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.yd.ychat.R;
 import com.yd.ychat.array.CaogaoMap;
+import com.yd.ychat.fragment.faceFragment;
+import com.yd.ychat.houdler.TxtViewhoudler;
 import com.yd.ychat.port.RecyclerViewItemClick;
+import com.yd.ychat.utils.StringUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -107,7 +111,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             case TXT:
                 EMTextMessageBody txtmsg = (EMTextMessageBody) lastMsg.getBody();
                 //消息内容
-                holder.item_chat_news.setText(txtmsg.getMessage());
+                SpannableStringBuilder msg = StringUtil.handler(context, txtmsg.getMessage());
+                holder.item_chat_news.setText(msg);
                 break;
             case IMAGE:
                 holder.item_chat_news.setText("[图片]");
@@ -130,7 +135,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
 
             holder.item_chat_caogao.setVisibility(View.VISIBLE);
-            holder.item_chat_news.setText(caogao);
+
+            holder.item_chat_news.setText(StringUtil.handler(context,caogao));
 
         }
 //        String draft = sp.getString(userName, "");

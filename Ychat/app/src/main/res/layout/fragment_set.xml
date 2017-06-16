@@ -13,8 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
-        android:text="Button"
+        android:text="发送"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/send" />
+        android:id="@+id/new_msg_send" />
+
+    <Button
+        android:id="@+id/new_msg_exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="退出" />
 </LinearLayout>

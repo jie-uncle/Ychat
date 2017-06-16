@@ -8,14 +8,15 @@
     <LinearLayout
         android:id="@+id/item_chat_msg_yuyin_left"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
+            android:layout_height="wrap_content"
+            >
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:src="@mipmap/icon" />
    <LinearLayout
+       android:id="@+id/item_chat_msg_yuyin_left_yuyin"
        android:padding="1dp"
        android:background="@drawable/message_yuyin_style"
 
@@ -34,16 +35,10 @@
             android:layout_height="wrap_content"
             android:text="6"
             android:textSize="20sp"
+            android:layout_marginRight="28dp"
             android:layout_gravity="center_vertical"
             />
-       <TextView
-           android:layout_marginRight="28dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="''"
-            android:textSize="28sp"
-            android:layout_gravity="center_vertical"
-            />
+
    </LinearLayout>
 </LinearLayout>
 
@@ -53,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:id="@+id/item_chat_msg_yuyin_right_yuyin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_yuyin_style"
@@ -65,15 +61,11 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="28dp"
                 android:text="6"
+                android:layout_marginRight="12dp"
                 android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="12dp"
-                android:text="''"
-                android:textSize="28sp" />
+
+
             <ImageView
                 android:layout_gravity="center_vertical"
                 android:layout_width="40dp"

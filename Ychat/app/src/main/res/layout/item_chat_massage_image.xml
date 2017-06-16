@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_chat_message_image_lay"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -12,7 +12,7 @@
 
         <LinearLayout
             android:id="@+id/item_chat_left_iv_lay"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -27,7 +27,6 @@
                 android:layout_width="190dp"
                 android:layout_height="260dp"
                 android:maxWidth="240dp"
-
                 android:src="@mipmap/icon" />
 
         </LinearLayout>

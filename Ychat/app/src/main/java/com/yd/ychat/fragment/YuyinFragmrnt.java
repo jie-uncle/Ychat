@@ -1,5 +1,6 @@
 package com.yd.ychat.fragment;
 
+import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,12 +36,14 @@ public class YuyinFragmrnt extends BaseFragment {
     private TimerTask timerTask;
     private MediaRecorder mr = null;
     String path = null;
-    Handler handler=new Handler(){
+    public int time;
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            String times= (String) msg.obj;
-            message_fragment_yuyin_tv.setText(times);
+            time++;
+            message_fragment_yuyin_tv.setText(timeutil(time));
+            handler.sendEmptyMessageDelayed(1,1000);
         }
     };
 
@@ -55,55 +58,57 @@ public class YuyinFragmrnt extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initview(view);
+        setTouch();
+    }
+
+    private void setTouch() {
         message_fragment_yuyin_iv_lay.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
-
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        path=Environment.getExternalStorageDirectory()+"/"+System.currentTimeMillis()+".amr";
-                        message_fragment_yuyin_iv_on.setVisibility(View.GONE);
-                        message_fragment_yuyin_iv_down.setVisibility(View.VISIBLE);
-                        if(mr==null){
-                            mr=new MediaRecorder();
-                        }else{
-                            mr.release();
-                         }
-                        ready_record(path);
-                        mr.start();
-                        settime();
+                        if (ishave()==true) {
+                                path = getContext().getCacheDir().getPath() + "/" + System.currentTimeMillis() + ".amr";
+                                message_fragment_yuyin_iv_on.setVisibility(View.GONE);
+                                message_fragment_yuyin_iv_down.setVisibility(View.VISIBLE);
+                                startMr(path);
+                                message_fragment_yuyin_tv.setText(timeutil(time));
+                                handler.sendEmptyMessageDelayed(1,1000);
+
+                        } else {
+                            Toast.makeText(getContext(), "请设置给该程序录音权限", Toast.LENGTH_LONG).show();
+                        }
+
                         break;
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (mr != null) {
-                            mr.stop();
-                            mr.release();
-//                            mr.reset();
-
-                            mr=null;
-                            timer.cancel();
-                            timerTask.cancel();
-                            timer=null;
-                            timerTask=null;
-                        }
+                        handler.removeMessages(1);
+                        closeMr();
                         message_fragment_yuyin_iv_on.setVisibility(View.VISIBLE);
                         message_fragment_yuyin_iv_down.setVisibility(View.GONE);
-                        if(time<=1){
-                            Toast.makeText(getContext(),"录音时间太短",Toast.LENGTH_SHORT).show();
-                        }else{
-                            if (path !=null){
-                                chatActivity.creatYuyin(path,time);
+                        if (time > 0) {
+                            if (path != null) {
+                                chatActivity.creatYuyin(path, time);
                             }
+                        } else {
+                            Toast.makeText(getContext(), "录音时间太短", Toast.LENGTH_SHORT).show();
                         }
                         message_fragment_yuyin_tv.setText("按住说话");
                         path = "";
+                        time=0;
                         break;
                 }
                 return true;
             }
+
+
         });
+    }
+
+    private boolean ishave() {
+        PackageManager packageManager = getContext().getPackageManager();
+        return PackageManager.PERMISSION_GRANTED == packageManager.checkPermission("android.permission.RECORD_AUDIO", "com.yd.ychat");
     }
 
     private void initview(View view) {
@@ -114,15 +119,14 @@ public class YuyinFragmrnt extends BaseFragment {
         chatActivity = (ChatActivity) getActivity();
     }
 
-    private void ready_record(String path) {
+    private void startMr(String path) {
+        if(mr==null){
+            initMr(path);
+        }
 
-         mr = new MediaRecorder();
-        mr.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mr.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mr.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mr.setOutputFile(path);
         try {
             mr.prepare();
+            mr.start();
         } catch (IllegalStateException e) {
 
             e.printStackTrace();
@@ -130,45 +134,42 @@ public class YuyinFragmrnt extends BaseFragment {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
-    public int time;
-    private void settime(){
-        time=0;
-                timer=new Timer();
-                timerTask=new TimerTask() {
-                    @Override
-                    public void run() {
-                        String times = timeutil(time);
-                        Message msg = handler.obtainMessage();
-                        msg.obj=times;
-                        msg.what=0;
-                        handler.sendMessage(msg);
-                        time++;
-                    }
-                };
-                timer.schedule(timerTask,0,1000);
-            }
 
-
-
-    private String timeutil(int time){
+    private void initMr(String path) {
+        mr = new MediaRecorder();
+        mr.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mr.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        mr.setOutputFile(path);
+        mr.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+    }
+    public static String timeutil(int time) {
         String times;
-        if(time>60){
+        if (time >= 60) {
             int minute = time / 60;
             int second = time % 60;
-            if(second<10){
-                times=minute+":0"+second;
-            }else{
-                times=minute+":"+second;
+            if (second < 10) {
+                times = minute + ":0" + second;
+            } else {
+                times = minute + ":" + second;
             }
-        }else {
-            if(time<10){
-                times="0:0"+time;
-            }else{
-                times="0:"+time;
+        } else {
+            if (time < 10) {
+                times = "0:0" + time;
+            } else {
+                times = "0:" + time;
             }
-
         }
         return times;
+    }
+    private void closeMr() {
+        if(mr!=null){
+            mr.stop();
+            mr.reset();
+            mr.release();
+            mr=null;
+        }
+
     }
 }

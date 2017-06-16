@@ -16,6 +16,7 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.yd.ychat.R;
 import com.yd.ychat.houdler.Imageviewhoudler;
 import com.yd.ychat.houdler.TxtViewhoudler;
+import com.yd.ychat.houdler.Videohoudler;
 import com.yd.ychat.houdler.Voicehoudler;
 import com.yd.ychat.port.Chat_msg_click;
 
@@ -42,20 +43,17 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter {
         this.name = name;
     }
 
-    public void refresh(List<EMMessage> messages) {
-        this.messages = messages;
-        notifyDataSetChanged();
-    }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType){
             case TXT:
-                return new TxtViewhoudler(LayoutInflater.from(context).inflate(R.layout.item_chat_massage_txt, parent, false),context);
+                return new TxtViewhoudler(LayoutInflater.from(context).inflate(R.layout.item_chat_massage_txt, parent, false));
             case IMAGE:
                 return new Imageviewhoudler(LayoutInflater.from(context).inflate(R.layout.item_chat_massage_image, parent, false));
             case VIDEO:
-
+                return new Videohoudler(LayoutInflater.from(context).inflate(R.layout.item_chat_massage_video,parent,false));
             case VOICE:
                 return new Voicehoudler(LayoutInflater.from(context).inflate(R.layout.item_chat_message_yuyin,parent,false));
         }
@@ -87,44 +85,15 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter {
 
 
        if(holder instanceof TxtViewhoudler){
-           ((TxtViewhoudler)holder).setview(emMessage);
-           ((TxtViewhoudler)holder).setClick(new Chat_msg_click() {
-               @Override
-               public void itemclick() {
+           ((TxtViewhoudler)holder).setview(emMessage,context);
 
-               }
-
-               @Override
-               public void itemlongclick() {
-
-               }
-           });
        }else if(holder instanceof Imageviewhoudler){
            ((Imageviewhoudler)holder).setview(context,emMessage);
-           ((Imageviewhoudler)holder).setClick(new Chat_msg_click() {
-               @Override
-               public void itemclick() {
 
-               }
-
-               @Override
-               public void itemlongclick() {
-
-               }
-           });
        }else if(holder instanceof Voicehoudler){
            ((Voicehoudler)holder).setview(emMessage);
-           ((Voicehoudler)holder).setClick(new Chat_msg_click() {
-               @Override
-               public void itemclick() {
-
-               }
-
-               @Override
-               public void itemlongclick() {
-
-               }
-           });
+       }else if(holder instanceof Videohoudler){
+           ((Videohoudler)holder).setview(context,emMessage);
        }
 
     }

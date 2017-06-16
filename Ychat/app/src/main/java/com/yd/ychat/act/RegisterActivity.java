@@ -1,6 +1,8 @@
 package com.yd.ychat.act;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PersistableBundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +22,22 @@ public class RegisterActivity extends BaseActivity {
     private  EditText register_user;
     private  EditText register_password;
     private  EditText register_password2;
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1:
+                    finish();
+                    showToast("注册成功");
+                    break;
+                case 0:
+                showToast("注册失败");
+                    break;
+            }
+        }
+    };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +64,7 @@ public class RegisterActivity extends BaseActivity {
             showToast("密码格式有误");
             return;
         }
-        if(!password.trim().equals(password2)){
+        if(!password.equals(password2)){
             showToast("两次密码输入不同");
             return;
         }
@@ -59,12 +77,11 @@ public class RegisterActivity extends BaseActivity {
                 public void run() {
                     try {
                         EMClient.getInstance().createAccount(user, password);
-
-                       finish();
-                        showToast("注册成功");
-                    } catch (HyphenateException e) {
+                        handler.sendEmptyMessage(1);
+                    } catch (final HyphenateException e) {
                         e.printStackTrace();
-                        showToast("注册失败");
+                       handler.sendEmptyMessage(0);
+
 
                     }
 
