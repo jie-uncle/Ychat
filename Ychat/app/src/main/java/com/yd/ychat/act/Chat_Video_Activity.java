@@ -156,6 +156,8 @@ public class Chat_Video_Activity extends BaseActivity implements View.OnClickLis
                     mp.seekTo(0);
                     mp.start();
                     video_play_again.setVisibility(View.GONE);
+                    iv_play.setVisibility(View.GONE);
+                    iv_stop.setVisibility(View.VISIBLE);
                     break;
 
         }

@@ -79,6 +79,12 @@
             android:theme="@style/MyTheme" />
         <activity
             android:name=".act.ChatActivity"
+            android:parentActivityName=".act.MainActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".act.GroupChatActivity"
+            android:parentActivityName=".act.MainActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -88,7 +94,9 @@
             android:name=".act.Chat_Video_Activity"
             android:theme="@style/MyTheme" />
         <activity android:name=".act.GroupActivity" />
-        <activity android:name=".act.New_GroupActivity"></activity>
+        <activity android:name=".act.New_GroupActivity" />
+        <activity android:name=".act.Group_InfoActivity" />
+        <activity android:name=".act.Group_MemberlistActivity"></activity>
     </application>
 
 </manifest>

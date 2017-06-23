@@ -1,5 +1,6 @@
 package com.yd.ychat.fragment;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import android.widget.Toast;
 
 import com.yd.ychat.R;
 import com.yd.ychat.act.ChatActivity;
+import com.yd.ychat.act.GroupChatActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,11 +33,11 @@ import java.util.TimerTask;
 public class YuyinFragmrnt extends BaseFragment {
     private ImageView message_fragment_yuyin_iv_on, message_fragment_yuyin_iv_down;
     private View message_fragment_yuyin_iv_lay;
-    private ChatActivity chatActivity;
+
     private TextView message_fragment_yuyin_tv;
     private Timer timer;
     private TimerTask timerTask;
-    private MediaRecorder mr = null;
+    private MediaRecorder mr;
     String path = null;
     public int time;
     Handler handler = new Handler() {
@@ -89,9 +92,14 @@ public class YuyinFragmrnt extends BaseFragment {
                         message_fragment_yuyin_iv_down.setVisibility(View.GONE);
                         if (time > 0) {
                             if (path != null) {
-                                chatActivity.creatYuyin(path, time);
+                                if(getActivity() instanceof ChatActivity){
+                                   ((ChatActivity) getActivity()).creatYuyin(path,time);
+                                }else if(getActivity() instanceof GroupChatActivity){
+                                    ((GroupChatActivity) getActivity()).creatYuyin(path,time);
+                                }
                             }
                         } else {
+                            new File(path).delete();
                             Toast.makeText(getContext(), "录音时间太短", Toast.LENGTH_SHORT).show();
                         }
                         message_fragment_yuyin_tv.setText("按住说话");
@@ -116,13 +124,17 @@ public class YuyinFragmrnt extends BaseFragment {
         message_fragment_yuyin_iv_down = (ImageView) view.findViewById(R.id.message_fragment_yuyin_iv_down);
         message_fragment_yuyin_iv_lay = view.findViewById(R.id.message_fragment_yuyin_iv_lay);
         message_fragment_yuyin_tv = (TextView) view.findViewById(R.id.message_fragment_yuyin_tv);
-        chatActivity = (ChatActivity) getActivity();
+
     }
 
     private void startMr(String path) {
         if(mr==null){
-            initMr(path);
+            mr = new MediaRecorder();
         }
+        mr.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mr.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        mr.setOutputFile(path);
+        mr.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
             mr.prepare();
@@ -137,13 +149,7 @@ public class YuyinFragmrnt extends BaseFragment {
 
     }
 
-    private void initMr(String path) {
-        mr = new MediaRecorder();
-        mr.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mr.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        mr.setOutputFile(path);
-        mr.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-    }
+
     public static String timeutil(int time) {
         String times;
         if (time >= 60) {
@@ -168,7 +174,6 @@ public class YuyinFragmrnt extends BaseFragment {
             mr.stop();
             mr.reset();
             mr.release();
-            mr=null;
         }
 
     }

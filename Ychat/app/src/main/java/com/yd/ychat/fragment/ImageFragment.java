@@ -16,6 +16,7 @@ import android.widget.Button;
 
 import com.yd.ychat.R;
 import com.yd.ychat.act.ChatActivity;
+import com.yd.ychat.act.GroupChatActivity;
 import com.yd.ychat.adapter.ImageRecycleAdapter;
 import com.yd.ychat.port.Message_imagelist;
 
@@ -113,7 +114,7 @@ public class ImageFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        ChatActivity chatActivity = (ChatActivity) getActivity();
+
 //        得到选择的图片集合
         Set<String> paths = adapter.getpaths();
 //        用迭代器遍历
@@ -121,7 +122,12 @@ public class ImageFragment extends BaseFragment implements View.OnClickListener 
 
         while (iterator.hasNext()){
 //            创建图片消息（里面会调用发送消息）
-            chatActivity.creatImagemsg(iterator.next());
+            if((getActivity()) instanceof ChatActivity){
+                ((ChatActivity)getActivity()).creatimage(iterator.next());
+            }else if((getActivity()) instanceof GroupChatActivity){
+                ((GroupChatActivity)getActivity()).creatimage(iterator.next());
+            }
+
         }
         adapter.refresh();
         paths.clear();

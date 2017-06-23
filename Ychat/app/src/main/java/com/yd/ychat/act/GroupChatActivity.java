@@ -2,21 +2,18 @@ package com.yd.ychat.act;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -55,18 +52,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.hyphenate.chat.EMMessage.ChatType.Chat;
-import static com.yd.ychat.R.id.action_bar;
-import static com.yd.ychat.R.id.chat_bobottom_flay;
-import static com.yd.ychat.R.id.chat_message_image_lay;
-import static com.yd.ychat.R.id.message_fragment_face_recyclerview;
-import static com.yd.ychat.R.id.time;
+import static com.hyphenate.chat.EMMessage.ChatType.GroupChat;
 
-public class ChatActivity extends BaseActivity implements View.OnClickListener, EMMessageListener {
+public class GroupChatActivity extends BaseActivity implements View.OnClickListener, EMMessageListener {
     public static final int FRAGMENT_CLOSE = 0;
     private boolean flay = false;
     private View chat_bobottom_flay;
@@ -78,7 +71,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private ImageView chat_iv_genduo;
     public EditText chat_edit_msg_content;
     private Button chat_msg_send;
-    private String name;
+    private String groupid,groupname;
     private static RecyclerView chat_recyclerview;
     private List<EMMessage> messages = new ArrayList<>();
     private ChatRecyclerAdapter adapter;
@@ -88,15 +81,16 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private faceFragment faceFragment;
     private YuyinFragmrnt yuyinFragmrnt;
     private BaseFragment currentFragment;
-    private EMMessage.ChatType type=Chat;
+    EMMessage.ChatType type= GroupChat;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_details);
-        name = getIntent().getStringExtra("name");
-        getSupportActionBar().setTitle(name);
+         groupid = getIntent().getStringExtra("groupid");
+         groupname = getIntent().getStringExtra("groupname");
+        getSupportActionBar().setTitle(groupname);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initview();
         if (getdata() != null) {
@@ -113,7 +107,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private List<EMMessage> getdata() {
-        conversation = EMClient.getInstance().chatManager().getConversation(name);
+        conversation = EMClient.getInstance().chatManager().getConversation(groupid);
         if (conversation == null) {
             return null;
         }
@@ -124,8 +118,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         if (messageList.size() == 1) {
             conversation.loadMoreMsgFromDB(messageList.get(0).getMsgId(), 20);
         }
-
-
         return conversation.getAllMessages();
 
 //SDK初始化加载的聊天记录为20条，到顶时需要去DB里获取更多
@@ -136,7 +128,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_message, menu);
+        getMenuInflater().inflate(R.menu.menu_group_message, menu);
         return true;
     }
 
@@ -145,6 +137,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                break;
+            case R.id.groupInfo:
+                Intent i=new Intent(this,Group_InfoActivity.class);
+                i.putExtra("groupid",groupid);
+                startActivity(i);
                 break;
         }
 
@@ -202,21 +199,19 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         chat_Swipereshlay.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                messages = conversation.loadMoreMsgFromDB(messages.get(0).getMsgId(), 10);
+                conversation.loadMoreMsgFromDB(messages.get(0).getMsgId(), 10);
                 messages = conversation.getAllMessages();
                 adapter.notifyDataSetChanged();
                 chat_Swipereshlay.setRefreshing(false);
-
-
             }
         });
         //消息的监听
         EMClient.getInstance().chatManager().addMessageListener(this);
         //在Map中获取草稿内容
-        String draft = map.get(name);
+        String draft = map.get(groupid);
 
         if (!TextUtils.isEmpty(draft)) {
-            SpannableStringBuilder newmsg = StringUtil.handler(this, draft);
+            SpannableStringBuilder newmsg = StringUtil.handler(this,draft);
             chat_edit_msg_content.setText(newmsg);
         } else {
             chat_msg_send.setEnabled(false);
@@ -259,7 +254,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         switch (v.getId()) {
             case R.id.chat_msg_send:
                 String txt = chat_edit_msg_content.getText().toString();
-                EMMessage emMessage = MessageManager.getInstance().creatTxtmsg(txt, name, type);
+                EMMessage emMessage = MessageManager.getInstance().creatTxtmsg(txt, groupid, type);
                 refresh(emMessage);
                 //发送消息
                 chat_edit_msg_content.setText("");
@@ -297,11 +292,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-
+        if(data!=null){
                 this.creatVideo(data,this);
-
-
         }
     }
 
@@ -353,14 +345,14 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         String msg = chat_edit_msg_content.getText().toString();
         if (TextUtils.isEmpty(msg)) {
 //            内容为空 在map中删除
-            map.remove(name);
+            map.remove(groupid);
         } else {
 //            不为空跟新map中的数据
-            map.put(name, msg);
+            map.put(groupid, msg);
         }
         MessageManager.getInstance().getMessageList().refreshChatList();
 //                把集合存入sp
-        SPutil.setChatDeff(ChatActivity.this, new Gson().toJson(map));
+        SPutil.setChatDeff(GroupChatActivity.this, new Gson().toJson(map));
 
     }
 
@@ -369,10 +361,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         if (closefragment()) {
             return;
         }
-        onback();
-    }
-
-    private void onback() {
         Intent parentActivityIntent = NavUtils.getParentActivityIntent(this);
         if (NavUtils.shouldUpRecreateTask(this, parentActivityIntent)) {
             TaskStackBuilder.create(this)
@@ -391,13 +379,16 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             public void run() {
                 EMMessage emMessage = list.get(0);
 //                判断新的消息是不是当前联系人发来的
-                if (emMessage.getFrom().equals(name)) {
+                if (emMessage.getTo() .equals(groupid) ) {
 
                     messages.addAll(list);
                     adapter.notifyDataSetChanged();
                     chat_recyclerview.scrollToPosition(messages.size() - 1);
+                    conversation.markAllMessagesAsRead();
+                    MessageManager.getInstance().getMessageList().refreshChatList();
+
                 }
-                MessageManager.getInstance().getMessageList().refreshChatList();
+
             }
         });
 
@@ -424,28 +415,30 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+    public void creatVideo(Intent data, Context context) {
+        EMMessage emMessage = MessageManager.getInstance().creatVideo(data, context, groupid, type);
+        refresh(emMessage);
+
+    }
+
+    public void creatYuyin(String path, int time) {
+        EMMessage emMessage = MessageManager.getInstance().creatYuyin(path, time, groupid, type);
+        refresh(emMessage);
+    }
+
+    public void creatimage(String path) {
+        EMMessage emMessage = MessageManager.getInstance().creatImagemsg(path, groupid, false, type);
+        refresh(emMessage);
+    }
     public void refresh(EMMessage msg) {
         messages.add(msg);
         adapter.notifyDataSetChanged();
         chat_recyclerview.scrollToPosition(messages.size() - 1);
     }
 
-    public void creatVideo(Intent data, Context context) {
 
-        EMMessage emMessage = MessageManager.getInstance().creatVideo(data, context, name, type);
-        refresh(emMessage);
-    }
 
-    public void creatYuyin(String path, int time) {
-        EMMessage emMessage =MessageManager.getInstance().creatYuyin(path,time,name,type);
-        refresh(emMessage);refresh(emMessage);
-    }
-
-    public void creatimage(String path) {
-        EMMessage emMessage = MessageManager.getInstance().creatImagemsg(path, name, false, type);
-        refresh(emMessage);
     }
 
 
 
-}

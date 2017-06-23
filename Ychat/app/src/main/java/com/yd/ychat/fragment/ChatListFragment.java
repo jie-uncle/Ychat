@@ -1,15 +1,19 @@
 package com.yd.ychat.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +29,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.yd.ychat.R;
 import com.yd.ychat.act.ChatActivity;
+import com.yd.ychat.act.GroupChatActivity;
 import com.yd.ychat.adapter.MyRecyclerAdapter;
 import com.yd.ychat.array.CaogaoMap;
 import com.yd.ychat.manager.MessageManager;
@@ -119,11 +124,35 @@ public class ChatListFragment extends BaseFragment implements MessageList {
         adapter.setClick(new RecyclerViewItemClick() {
             @Override
             public void onitemclicklistener(int index) {
-                intent2chat(list.get(index).getUserName());
+                if(list.get(index).getType()== EMConversation.EMConversationType.GroupChat){
+                    String groupId = EMClient.getInstance().groupManager().getGroup(list.get(index).getLastMessage().getTo()).getGroupId();
+                    String groupname = EMClient.getInstance().groupManager().getGroup(list.get(index).getLastMessage().getTo()).getGroupName();
+                    intent2Groupchat(groupId,groupname);
+                }else if(list.get(index).getType()== EMConversation.EMConversationType.Chat){
+                    intent2chat(list.get(index).getUserName());
+                }
+
             }
 
             @Override
-            public void onitemlongclick(int index) {
+            public void onitemlongclick(final int index) {
+                AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+                builder.setTitle("要清除此条会话么？");
+                builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EMClient.getInstance().chatManager().deleteConversation(list.get(index).getUserName(), true);
+                        MessageManager.getInstance().getMessageList().refreshChatList();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
     }
@@ -132,6 +161,13 @@ public class ChatListFragment extends BaseFragment implements MessageList {
         Intent i = new Intent(getContext(), ChatActivity.class);
         i.putExtra("name", username);
         startActivityForResult(i,CAOGAO_CODE);
+    }
+
+    private void intent2Groupchat(String groupid,String groupname) {
+        Intent i = new Intent(getContext(), GroupChatActivity.class);
+        i.putExtra("groupid", groupid);
+        i.putExtra("groupname",groupname);
+        startActivityForResult(i, CAOGAO_CODE);
     }
 
     @Override

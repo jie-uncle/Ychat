@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hyphenate.chat.EMClient;
@@ -13,6 +15,8 @@ import com.hyphenate.chat.EMMessage;
 import com.yd.ychat.R;
 import com.yd.ychat.act.Chat_Image_Activity;
 import com.yd.ychat.port.Chat_msg_click;
+
+import java.io.File;
 
 /**
  * Created by 荀高杰 on 2017/5/24.
@@ -24,6 +28,8 @@ public class Imageviewhoudler extends RecyclerView.ViewHolder  {
     private  View item_chat_left_iv_lay;
     private ImageView item_chat_msg_iv_right;
     private ImageView item_chat_msg_iv_left;
+    private TextView group_username;
+
     private View image_lay;
     private Context context;
 
@@ -37,6 +43,7 @@ public class Imageviewhoudler extends RecyclerView.ViewHolder  {
         item_chat_left_iv_lay= v.findViewById(R.id.item_chat_left_iv_lay);
         item_chat_msg_iv_right= (ImageView) v.findViewById(R.id.item_chat_msg_iv_right);
         item_chat_msg_iv_left= (ImageView) v.findViewById(R.id.item_chat_msg_iv_left);
+        group_username= (TextView) v.findViewById(R.id.group_username_image);
     }
     public void setview(final Context context, final EMMessage m) {
         this.context=context;
@@ -48,16 +55,27 @@ public class Imageviewhoudler extends RecyclerView.ViewHolder  {
             if(type== EMMessage.Type.IMAGE){
                 EMImageMessageBody body = (EMImageMessageBody) m.getBody();
                 final String url = body.getLocalUrl();
-                String thumbnailUrl = body.getThumbnailUrl();
-                Glide.with(context).load(thumbnailUrl).into(item_chat_msg_iv_right);
-                item_chat_msg_iv_right.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        inten2chat_Image(url);
-                    }
-                });
+                if(new File(url).exists()){
+                    String thumbnailUrl = body.thumbnailLocalPath();
+                    Glide.with(context).load(thumbnailUrl).into(item_chat_msg_iv_right);
+                    item_chat_msg_iv_right.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            inten2chat_Image(url);
+                        }
+                    });
+                }else {
+                    Toast.makeText(context,"文件损坏",Toast.LENGTH_SHORT).show();
+                }
+
             }
         }else {
+            if(m.getChatType()== EMMessage.ChatType.GroupChat){
+                group_username.setVisibility(View.VISIBLE);
+                group_username.setText(m.getFrom());
+            }else{
+                group_username.setVisibility(View.GONE);
+            }
             item_chat_right_iv_lay.setVisibility(View.GONE);
             item_chat_left_iv_lay.setVisibility(View.VISIBLE);
             if(type== EMMessage.Type.IMAGE){

@@ -22,7 +22,7 @@ public class Voicehoudler extends RecyclerView.ViewHolder {
     private View item_chat_msg_yuyin_left,item_chat_msg_yuyin_left_yuyin,item_chat_msg_yuyin_right_yuyin;
     private TextView item_chat_msg_yuyin_left_time;
     private View item_chat_msg_yuyin_right;
-    private TextView item_chat_msg_yuyin_right_time;
+    private TextView item_chat_msg_yuyin_right_time,group_username;
     private View yuyin_lay;
     private AlphaAnimation alphaAnimation;
     private View v=null;
@@ -32,6 +32,7 @@ public class Voicehoudler extends RecyclerView.ViewHolder {
         initview(itemView);
     }
     private void initview(View v) {
+        group_username= (TextView) v.findViewById(R.id.group_username_txt);
          yuyin_lay = v.findViewById(R.id.item_chat_message_yuyin_lay);
          item_chat_msg_yuyin_left_yuyin = v.findViewById(R.id.item_chat_msg_yuyin_left_yuyin);
          item_chat_msg_yuyin_right_yuyin = v.findViewById(R.id.item_chat_msg_yuyin_right_yuyin);
@@ -60,6 +61,12 @@ public class Voicehoudler extends RecyclerView.ViewHolder {
                 });
             }
         }else{
+            if(message.getChatType()== EMMessage.ChatType.GroupChat){
+                group_username.setVisibility(View.VISIBLE);
+                group_username.setText(message.getFrom());
+            }else{
+                group_username.setVisibility(View.GONE);
+            }
             item_chat_msg_yuyin_left.setVisibility(View.VISIBLE);
             item_chat_msg_yuyin_right.setVisibility(View.GONE);
             if(type== EMMessage.Type.VOICE){
@@ -80,7 +87,7 @@ public class Voicehoudler extends RecyclerView.ViewHolder {
 
     }
     private void animation_start(View view){
-        ChatActivity.getRecycleview().clearAnimation();
+
         //开始动画
         animation();
         view.startAnimation(alphaAnimation);

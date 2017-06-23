@@ -6,41 +6,54 @@
     android:id="@+id/item_chat_message_yuyin_lay"
     android:orientation="vertical">
     <LinearLayout
-        android:id="@+id/item_chat_msg_yuyin_left"
-        android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:src="@mipmap/icon" />
-   <LinearLayout
-       android:id="@+id/item_chat_msg_yuyin_left_yuyin"
-       android:padding="1dp"
-       android:background="@drawable/message_yuyin_style"
-
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal">
-       <ImageView
-           android:layout_gravity="center_vertical"
-           android:layout_width="40dp"
-           android:layout_height="30dp"
-           android:src="@drawable/yuyin_left"/>
+        android:orientation="vertical">
         <TextView
-            android:id="@+id/item_chat_msg_yuyin_left_time"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="5dp"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="6"
-            android:textSize="20sp"
-            android:layout_marginRight="28dp"
-            android:layout_gravity="center_vertical"
-            />
+            android:id="@+id/group_username_voice"/>
+        <LinearLayout
+            android:id="@+id/item_chat_msg_yuyin_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
 
-   </LinearLayout>
-</LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/icon" />
+            <LinearLayout
+                android:id="@+id/item_chat_msg_yuyin_left_yuyin"
+                android:padding="1dp"
+                android:background="@drawable/message_yuyin_style"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/yuyin_left"/>
+                <TextView
+                    android:id="@+id/item_chat_msg_yuyin_left_time"
+                    android:layout_marginLeft="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="6"
+                    android:textSize="20sp"
+                    android:layout_marginRight="28dp"
+                    android:layout_gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/item_chat_msg_yuyin_right"

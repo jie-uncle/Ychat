@@ -9,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 import com.yd.ychat.R;
 import com.yd.ychat.act.ChatActivity;
+import com.yd.ychat.act.GroupActivity;
 
 import java.util.List;
 import java.util.logging.Handler;
@@ -26,6 +28,7 @@ import java.util.logging.Handler;
 public class ContactsFragment extends BaseFragment{
     private ListView fragment_contacts_listview;
     private List<String> usernames;
+    private ImageView newfriend,group;
 
     android.os.Handler handler=new android.os.Handler(){
         @Override
@@ -61,6 +64,23 @@ public class ContactsFragment extends BaseFragment{
                 startActivity(i);
             }
         });
+        newfriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent2group();
+            }
+        });
+    }
+
+    private void intent2group() {
+        Intent i=new Intent(getContext(), GroupActivity.class);
+        startActivity(i);
     }
 
     private void getData() {
@@ -68,7 +88,7 @@ public class ContactsFragment extends BaseFragment{
             @Override
             public void run() {
                 try {
-                     usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                    usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
                     Message msg = handler.obtainMessage();
                     handler.sendEmptyMessage(1);
                 } catch (HyphenateException e) {
@@ -79,6 +99,8 @@ public class ContactsFragment extends BaseFragment{
     }
 
     private void initview(View v) {
-       fragment_contacts_listview= (ListView) v.findViewById(R.id.fragment_contacts_listview);
+        fragment_contacts_listview= (ListView) v.findViewById(R.id.fragment_contacts_listview);
+        newfriend= (ImageView) v.findViewById(R.id.cantacts_iv_newfriend);
+        group= (ImageView) v.findViewById(R.id.cantacts_iv_group);
     }
 }

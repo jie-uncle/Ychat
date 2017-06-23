@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hyphenate.EMCallBack;
@@ -31,6 +33,7 @@ public class Videohoudler extends RecyclerView.ViewHolder  {
     private  View item_chat_message_video_left;
     private ImageView item_chat_message_video_image_right;
     private ImageView  item_chat_message_video_image_left;
+    private TextView group_username;
 
     private Context context;
 
@@ -44,6 +47,7 @@ public class Videohoudler extends RecyclerView.ViewHolder  {
         item_chat_message_video_left= v.findViewById(R.id.item_chat_message_video_left);
         item_chat_message_video_image_right= (ImageView) v.findViewById(R.id.item_chat_message_video_image_right);
         item_chat_message_video_image_left= (ImageView) v.findViewById(R.id. item_chat_message_video_image_left);
+        group_username= (TextView) v.findViewById(R.id.group_username_txt);
     }
     public void setview(final Context context, final EMMessage m) {
         this.context = context;
@@ -67,27 +71,39 @@ public class Videohoudler extends RecyclerView.ViewHolder  {
                             intent2video(finalUrl);
                         }
                     });
+                }else{
+                    item_chat_message_video_image_right.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                           Toast.makeText(context,"文件损坏",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         } else {
+            if(m.getChatType()== EMMessage.ChatType.GroupChat){
+                group_username.setVisibility(View.VISIBLE);
+                group_username.setText(m.getFrom());
+            }else{
+                group_username.setVisibility(View.GONE);
+            }
             item_chat_message_video_right.setVisibility(View.GONE);
             item_chat_message_video_left.setVisibility(View.VISIBLE);
             if (type == EMMessage.Type.VIDEO) {
                 final EMVideoMessageBody body = (EMVideoMessageBody) m.getBody();
-
-
-
-
-
                     Glide.with(context).load(body.getThumbnailUrl()).into(item_chat_message_video_image_left);
-
-
-                String path = body.getLocalUrl();
+                final String path = body.getLocalUrl();
                 if(new File(path).exists()){
-                    intent2video(path);
+                    item_chat_message_video_image_left.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            intent2video(path);
+                        }
+                    });
+
 
                 }else{
-
+                    Toast.makeText(context,"正在加载。。加载完成后再次点击",Toast.LENGTH_SHORT).show();
                     final String locpath=context.getCacheDir()+"/"+System.currentTimeMillis()+".mp4";
                     HashMap<String,String> map=new HashMap<String, String>();
                     if (!TextUtils.isEmpty(body.getSecret())){
@@ -104,7 +120,7 @@ public class Videohoudler extends RecyclerView.ViewHolder  {
                                      ((EMVideoMessageBody) m.getBody()).setLocalUrl(locpath);
                                      //更新数据库消息
                                      EMClient.getInstance().chatManager().updateMessage(m);
-                                     return;
+                                     Toast.makeText(context,"加载完成",Toast.LENGTH_SHORT).show();
                                  }
 
                                  @Override

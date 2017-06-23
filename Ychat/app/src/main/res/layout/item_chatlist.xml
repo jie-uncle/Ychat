@@ -1,125 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_chat_lay"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:id="@+id/item_chat_lay">
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/img"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/chat_chat"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/chat" />
+
+        <ImageView
+            android:id="@+id/chat_group"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/group" />
+    </RelativeLayout>
+
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="bottom">
-            <RelativeLayout
+            android:layout_height="70dp"
+            android:orientation="vertical">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/item_chat_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textColor="#000000"
-                    android:text="萧条期"
-                    />
-                <TextView
-                    android:id="@+id/item_chat_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="#808080"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="5dp"
-                    android:text="上午9:01"/>
-            </RelativeLayout>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom">
 
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-
-            android:layout_weight="1">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/item_chat_caogao"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:maxWidth="260dp"
-                    android:maxLines="1"
-                    android:textColor="#ff0000"
-                    android:text="[草稿]"
-                    />
-                <TextView
-                    android:layout_toRightOf="@id/item_chat_caogao"
-                    android:id="@+id/item_chat_news"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:maxWidth="260dp"
-                    android:maxLines="1"
-                    android:textColor="#808080"
-                    android:text="dsaadawdsd"
-                    />
                 <RelativeLayout
-                    android:id="@+id/item_chatlist_count_lay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@drawable/item_caht_number"
-                    >
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/item_chat_unreadnumber"
-                        android:paddingRight="2dp"
-                        android:paddingLeft="2dp"
-
+                        android:id="@+id/item_chat_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="8sp"
-                        android:textColor="#ffffff"
-                        android:layout_centerInParent="true"
+                        android:text="萧条期"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
 
-
-                        android:text="99+"/>
+                    <TextView
+                        android:id="@+id/item_chat_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="8dp"
+                        android:text="上午9:01"
+                        android:textColor="#808080"
+                        android:textSize="12sp" />
                 </RelativeLayout>
 
-            </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/item_chat_caogao"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:maxLines="1"
+                        android:maxWidth="260dp"
+                        android:text="[草稿]"
+                        android:textColor="#ff0000"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/item_chat_news"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_toRightOf="@id/item_chat_caogao"
+                        android:maxLines="1"
+                        android:maxWidth="260dp"
+                        android:text="dsaadawdsd"
+                        android:textColor="#808080"
+                        android:textSize="14sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/item_chatlist_count_lay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/item_caht_number">
+
+                        <TextView
+                            android:id="@+id/item_chat_unreadnumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_centerInParent="true"
+                            android:paddingLeft="2dp"
+                            android:paddingRight="2dp"
+                            android:text="99+"
+                            android:textColor="#ffffff"
+
+
+                            android:textSize="8sp" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
 
     </LinearLayout>
 
-
-
-</LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1.5dp"
-        android:background="#DCDCDC"/>
+        android:background="#DCDCDC" />
 </LinearLayout>

@@ -36,7 +36,7 @@ public class TxtViewhoudler extends RecyclerView.ViewHolder {
 
 
     private TextView item_chat_msg_tv_left;
-    private TextView item_chat_msg_tv_right;
+    private TextView item_chat_msg_tv_right,group_username;
 
 
     public TxtViewhoudler(View itemView) {
@@ -53,10 +53,11 @@ public class TxtViewhoudler extends RecyclerView.ViewHolder {
         item_chat_msg_left_lay = v.findViewById(R.id.item_chat_tv_left_lay);
         item_chat_msg_tv_left = (TextView) v.findViewById(R.id.item_chat_msg_tv_left);
         item_chat_msg_tv_right = (TextView) v.findViewById(R.id.item_chat_msg_tv_right);
+        group_username= (TextView) v.findViewById(R.id.group_username_txt);
     }
 
     public void setview(EMMessage message,Context context) {
-
+        EMMessage.ChatType chatType = message.getChatType();
         EMMessage.Type type = message.getType();
 
         String emMessageFrom = message.getFrom();
@@ -70,6 +71,12 @@ public class TxtViewhoudler extends RecyclerView.ViewHolder {
                 item_chat_msg_tv_right.setText(newmsg);
             }
         } else {
+            if(chatType== EMMessage.ChatType.GroupChat){
+                group_username.setVisibility(View.VISIBLE);
+                group_username.setText(message.getFrom());
+            }else{
+                group_username.setVisibility(View.GONE);
+            }
 
             item_chat_msg_left_lay.setVisibility(View.VISIBLE);
             item_chat_msg_right_lay.setVisibility(View.GONE);

@@ -34,13 +34,13 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter {
 
 
     private List<EMMessage> messages;
-    private String name;
+
     private Context context;
 
-    public ChatRecyclerAdapter(List<EMMessage> messages, Context context, String name) {
+    public ChatRecyclerAdapter(List<EMMessage> messages, Context context) {
         this.messages = messages;
         this.context = context;
-        this.name = name;
+
     }
 
 

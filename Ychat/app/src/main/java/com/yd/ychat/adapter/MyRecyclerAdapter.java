@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.yd.ychat.R;
@@ -21,6 +23,7 @@ import com.yd.ychat.houdler.TxtViewhoudler;
 import com.yd.ychat.port.RecyclerViewItemClick;
 import com.yd.ychat.utils.StringUtil;
 
+import java.security.acl.Group;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +61,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         private TextView item_chat_unreadnumber;
         private TextView item_chat_username;
         private LinearLayout item_chat_lay;
-        private  View item_chat_caogao;
+        private  View item_chat_caogao,group,chat;
         private View item_chatlist_count_lay;
 
         public MyViewHouder(View itemView) {
@@ -74,6 +77,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             item_chat_lay = (LinearLayout) view.findViewById(R.id.item_chat_lay);
              item_chat_caogao = view.findViewById(R.id.item_chat_caogao);
              item_chatlist_count_lay = view.findViewById(R.id.item_chatlist_count_lay);
+             group = view.findViewById(R.id.chat_group);
+             chat = view.findViewById(R.id.chat_chat);
+
         }
     }
 
@@ -83,24 +89,36 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         if(map==null){
             map = CaogaoMap.getInstance();
         }
-
-
-
         //获取消息对象
         EMConversation emConversation = conversations.get(position);
 
         //获取消息内容
         EMConversation.EMConversationType type = emConversation.getType();
-        //获取用户名
-        String userName = emConversation.getUserName();
+
+        //获取最后一条消息
+        EMMessage lastMsg = emConversation.getLastMessage();
+        String userName;
+        if(type== EMConversation.EMConversationType.GroupChat){
+            holder.chat.setVisibility(View.GONE);
+            holder.group.setVisibility(View.VISIBLE);
+            userName= EMClient.getInstance().groupManager().getGroup(lastMsg.getTo()).getGroupName();
+        }else{
+            holder.chat.setVisibility(View.VISIBLE);
+            holder.group.setVisibility(View.GONE);
+            //获取用户名
+            userName = emConversation.getUserName();
+        }
+
+
+
+
         //获取未读消息数
         int unreadMsgCount = emConversation.getUnreadMsgCount();
         String unreadcount=String.valueOf(unreadMsgCount);
         if(unreadMsgCount>99){
             unreadcount="99+";
         }
-        //获取最后一条消息
-        EMMessage lastMsg = emConversation.getLastMessage();
+
         //获取消息类型
         EMMessage.Type msgType = lastMsg.getType();
         //获取消息时间
@@ -139,13 +157,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             holder.item_chat_news.setText(StringUtil.handler(context,caogao));
 
         }
-//        String draft = sp.getString(userName, "");
-//        if(TextUtils.isEmpty(draft)){
-//            holder.item_chat_caogao.setVisibility(View.GONE);
-//        }else{
-//            holder.item_chat_caogao.setVisibility(View.VISIBLE);
-//                holder.item_chat_news.setText(draft);
-//        }
+
 
         holder.item_chat_username.setText(userName);
         holder.item_chat_unreadnumber.setText(unreadcount);

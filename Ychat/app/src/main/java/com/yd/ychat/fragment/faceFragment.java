@@ -1,5 +1,6 @@
 package com.yd.ychat.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.yd.ychat.R;
 import com.yd.ychat.act.ChatActivity;
+import com.yd.ychat.act.GroupChatActivity;
 import com.yd.ychat.adapter.FaceRecycleAdapter;
 import com.yd.ychat.adapter.ImageRecycleAdapter;
 import com.yd.ychat.array.Face_List;
@@ -33,6 +35,9 @@ import java.util.List;
 
 public class faceFragment extends BaseFragment {
     private RecyclerView message_fragment_face_recyclerview;
+    private Context context;
+
+
 
     private List<Facebeen> facebeens= Face_List.getInstanceList();
     @Nullable
@@ -58,7 +63,12 @@ public class faceFragment extends BaseFragment {
                 d.setBounds(0, 0, d.getIntrinsicWidth()/2,  d.getIntrinsicHeight()/2);
                 ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
                 spannableString.setSpan(span,0 , facebeens.get(index).getName().length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                ((ChatActivity)getActivity()).chat_edit_msg_content.append(spannableString);
+                if((getActivity()) instanceof ChatActivity){
+                    ((ChatActivity)getActivity()).chat_edit_msg_content.append(spannableString);
+                }else if((getActivity()) instanceof GroupChatActivity){
+                    ((GroupChatActivity)getActivity()).chat_edit_msg_content.append(spannableString);
+                }
+
 
             }
         });
